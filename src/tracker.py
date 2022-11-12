@@ -12,17 +12,14 @@ class MovementDetector():
         
 
     def showMask(self):
-        roi = self.frame[340: 720,500: 800]
-        mask = self.object_detector.apply(roi)
-        cv2.imshow("Mask", mask)
+        self.roi = self.frame[340: 720,500: 800]
+        self.mask = self.object_detector.apply(self.roi)
+        cv2.imshow("Mask", self.mask)
 
-    def PercentageOfMovement(self, x1, x2, y1, y2):
-        roi = self.frame[y1: y2,x1: x2]
-        mask = self.object_detector.apply(roi)
-        
+    def PercentageOfMovement(self):
         w = 0
         b = 0
-        for i in mask:
+        for i in self.mask:
             for j in i:
                 if j:
                     w+=1
@@ -30,4 +27,6 @@ class MovementDetector():
                 else:
                     b+=1
         return(100*(w/(b*100)))
-        
+
+    def updateRoi(self, x1, x2, y1, y2):
+        self.roi = self.frame[y1: y2,x1: x2]

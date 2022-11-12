@@ -1,6 +1,8 @@
 from tracker import MovementDetector
 import cv2
 
+
+
 cap = cv2.VideoCapture(0)
 
 movement_detector = MovementDetector(cap)
@@ -16,7 +18,9 @@ while running:
     
     movement_detector.update()
     movement_detector.showMask()
-    #print(movement_detector.PercentageOfMovement(100, 500, 100, 500))
+
+    # Kills camera. needs fix
+    print(movement_detector.PercentageOfMovement())
 
     key = cv2.waitKey(30)
     if key == 27:
