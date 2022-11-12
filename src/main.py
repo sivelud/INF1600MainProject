@@ -1,19 +1,14 @@
-from tracker import *
+from tracker import MovementDetector
+import cv2
 
-"""
-SOURCE: https://www.youtube.com/watch?v=O3b8lVF93jU
-Copyed his sourcecode and modifyed it.
-"""
-
-tracker = MovementDetector()
+movement_detector = MovementDetector()
 
 while True:
-
-    tracker.update()
+    
+    movement_detector.update()
 
     key = cv2.waitKey(30)
     if key == 27:
         break
 
-tracker.cap.release()
-cv2.destroyAllWindows()
+movement_detector.destroy()
