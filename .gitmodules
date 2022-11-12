@@ -1,0 +1,3 @@
+[submodule "as-one"]
+	path = as-one
+	url = https://github.com/sdalv1k/AS-One.git
