@@ -55,13 +55,11 @@ def main(args):
                 if y2 > 1080:
                     y2 = 1080
 
-                print(x1, x2, y1, y2)
-
                 
-                # movement_detector.updateRoi(0, 200, 0, 1080)
-                movement_detector.updateRoi(x1, x2, y1, y2)
+                #movement_detector.updateRoi(0, 1920, 0, 1080)
+                #movement_detector.updateRoi(x1, x2, y1, y2)
 
-                
+                movement_detector.PercentageOfMovement2(100, 120, 100, 120)            
 
                 if judge.update(movement_detector.PercentageOfMovement()):
                     print("GAME OVER!")
@@ -83,7 +81,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--video_path', help='Path to input video')
-    parser.add_argument('--cpu', default=True, action='store_false', dest='use_cuda',
+    parser.add_argument('--cpu', default=False, action='store_false', dest='use_cuda',
                         help='run on cpu if not provided the program will run on gpu.')
     parser.add_argument('--no_save', default=True, action='store_false',
                         dest='save_result', help='whether or not save results')

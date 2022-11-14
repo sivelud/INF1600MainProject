@@ -43,6 +43,29 @@ class MovementDetector():
             n = int(w/t*100)
         return(n)
 
+
+    def PercentageOfMovement2(self, x1, x2, y1, y2):
+        w = 0 # White pixels
+        t = 0 # Total number of pixels
+        n = 0
+
+        # Goes over all pixels in mask
+        for i in range(x1, x2):
+            
+            for j in range(y1, y2):
+                if self.mask[i][j]:
+                    w+=1
+                    t+=1
+                else:
+                    t+=1
+            
+
+        # Percentage of pixels that are white
+        if w and t:
+            n = int(w/t*100)
+        return(n)
+
+
     def updateRoi(self, x1, x2, y1, y2):
         self.roi = self.frame[y1: y2,x1: x2]
 
