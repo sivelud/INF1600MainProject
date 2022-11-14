@@ -4,8 +4,8 @@ import time
 
 
 class MovementDetector():
-    def __init__(self):
-        self.cap = cv2.VideoCapture(0)
+    def __init__(self, cap):
+        self.cap = cap
         if not self.cap.isOpened():
             print("\nERROR:\n Camera failed to open. Reboot necessary. Remember to run cap.release() and cv2.destroyAllWindows() on exit.\n")
 

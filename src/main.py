@@ -18,7 +18,16 @@ def main(args):
         )
 
     # Track using webcam
-    track_fn = dt_obj.track_webcam(cam_id=0, output_dir='data/results', save_result=False, display=True)
+    cap = cv2.VideoCapture(0)
+
+    track_fn = dt_obj.track_webcam(cap, output_dir='data/results', save_result=False, display=True)
+
+    # Movement Judge Parameters:
+    top_cutoff = 80 # Movement above this percentage will be ignored
+    sensitivity = 3 # Movement above this percentage will result in game over
+
+    movement_detector = MovementDetector(cap)
+    judge = Judge(top_cutoff, sensitivity)
 
     # Loop over track_fn to retrieve outputs of each frame 
     for bbox_details, frame_details in track_fn:
@@ -29,32 +38,21 @@ def main(args):
             # It's a human
             print("human")
 
-    # Movement Judge Parameters:
-    top_cutoff = 80 # Movement above this percentage will be ignored
-    sensitivity = 3 # Movement above this percentage will result in game over
+            print(bbox_xyxy)
 
 
 
-    movement_detector = MovementDetector()
-    judge = Judge(top_cutoff, sensitivity)
-    #judge.redLight()
-
-
-
-    while True:
         movement_detector.update()
         # Nessecary in order for the program to exit correctly. Will probably be obsolete later in the project.
         movement_detector.showMask()
         # Region of interest. The part of the screen that will be checked for movement
-        movement_detector.updateRoi(0, 1920, 0, 1080)
+        movement_detector.updateRoi(0, 200, 0, 1080)
 
         
 
         if judge.update(movement_detector.PercentageOfMovement()):
             print("GAME OVER!")
             break
-        
-        
 
         key = cv2.waitKey(30)
         if key == 27:
