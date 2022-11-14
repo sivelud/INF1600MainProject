@@ -30,4 +30,4 @@ sudo reboot
 ```
 
 
-Return to [Installation Page](README.md) 
+Return to [Installation Page](./README.md) 
