@@ -1,51 +1,110 @@
 import cv2
+from playsound import playsound
+import time
+
 
 class MovementDetector():
     def __init__(self):
-        # Bruker kamera feed
         self.cap = cv2.VideoCapture(0)
-        # Lager en maske med MOG2
-        self.object_detector = cv2.createBackgroundSubtractorMOG2(history=200, varThreshold=40)
+        if not self.cap.isOpened():
+            print("\nERROR:\n Camera failed to open. Reboot necessary. Remember to run cap.release() and cv2.destroyAllWindows() on exit.\n")
 
-        self.players = [PlayerTracker(100, 500, 100, 500), PlayerTracker(600, 900, 600, 900)]
+        self.object_detector = cv2.createBackgroundSubtractorMOG2(history=40, varThreshold=80)
+        ret, self.frame = self.cap.read()
+        height, width, _ = self.frame.shape
+        self.roi = self.frame[0: 1080,0: 1920]
+        
+        
 
     def update(self):
-        for player in self.players:
-            player.update(self.cap, self.object_detector)
-
-
-
-class PlayerTracker():
-    def __init__(self, x1, x2, y1, y2):
-        self.x1 = x1
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
-
-    def update(self, cap, object_detector):
-        self.ret, self.frame = self.cap.read()
-        self.roi = self.frame[self.y1:self.y2, self.x1:self.x2]
+        ret, self.frame = self.cap.read()
+        height, width, _ = self.frame.shape
         self.mask = self.object_detector.apply(self.roi)
-
-        # 1. Object Detection
-        self.mask = self.object_detector.apply(self.roi)
-
-        _, self.mask = cv2.threshold(self.mask, 254, 255, cv2.THRESH_BINARY)
-
-        self.n = 0
-        for a in self.mask:
-            for i in a:
-                if i:
-                    self.n += 1
-
-    def printMovement(self):
-        print(self.n)
 
     def showMask(self):
         cv2.imshow("Mask", self.mask)
+        
 
-    def resizeAreaOfInterest(self, x1, x2, y1, y2):
-        self.x1 = x1
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
+    def PercentageOfMovement(self):
+        w = 0 # White pixels
+        t = 0 # Total number of pixels
+        n = 0
+
+        # Goes over all pixels in mask
+        for i in self.mask:
+            for j in i:
+                if j:
+                    w+=1
+                    t+=1
+                else:
+                    t+=1
+        # Percentage of pixels that are white
+        if w and t:
+            n = int(w/t*100)
+        return(n)
+
+    def updateRoi(self, x1, x2, y1, y2):
+        self.roi = self.frame[y1: y2,x1: x2]
+
+    def closeCamera(self):
+        self.cap.release()
+        
+
+
+class Judge():
+    def __init__(self, top_cutoff, sensitivity):
+        self.top_cutoff = top_cutoff
+        self.sensitivity = sensitivity
+        self.greenLightBool = True
+        self.tempBool = False
+        self.time = time.time()
+        self.starttime = self.time
+        self.timeLastLight = self.starttime
+        
+
+    def update(self, movement):
+        self.time = time.time()
+
+        if not self.greenLightBool:
+            if self.time - self.timeLastLight > 1:
+                if movement > self.top_cutoff:
+                    return False
+                if movement > self.sensitivity:
+                    return True
+
+        self.autoChangeLight()
+            
+
+    def greenLight(self):
+        self.greenLightBool = True
+        playsound('sounds/greenLight.mp3', False)
+        self.timeLastLight = self.time
+
+    def redLight(self):
+        playsound('sounds/redLight.mp3', False)
+        self.greenLightBool = False
+        self.timeLastLight = self.time
+
+    def changeLight(self):
+        print("Greenlight bool =",self.greenLightBool)
+        self.greenLightBool = not self.greenLightBool
+        if self.greenLightBool:
+            self.greenLight()
+        if not self.greenLightBool:
+            self.redLight()
+
+    def autoChangeLight(self):
+
+        if self.greenLightBool:
+            if self.time - self.timeLastLight > 2:
+                self.changeLight()
+                self.timeLastLight = self.time
+                return
+
+        if not self.greenLightBool:
+            if self.time - self.timeLastLight > 5:
+                self.changeLight()
+                self.timeLastLight = self.time
+                return
+    
+    
