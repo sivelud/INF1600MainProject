@@ -45,14 +45,21 @@ class MovementDetector():
 
 
     def PercentageOfMovement2(self, x1, x2, y1, y2):
+        print("running percantageOfMovement2")
+
         w = 0 # White pixels
         t = 0 # Total number of pixels
         n = 0
+        xCount = 0
+        yCount = 0
 
         # Goes over all pixels in mask
         for i in range(x1, x2):
-            
+            xCount += 1
+            print(xCount)
             for j in range(y1, y2):
+                yCount += 1
+                print(yCount)
                 if self.mask[i][j]:
                     w+=1
                     t+=1
