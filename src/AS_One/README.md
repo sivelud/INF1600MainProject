@@ -50,8 +50,8 @@ source .env/bin/activate
 
 pip install numpy Cython
 pip install cython-bbox
-
 pip install asone
+pip install playsound
 
 
 # for CPU
@@ -69,8 +69,8 @@ python -m venv .env
 .env\Scripts\activate
 pip install numpy Cython
 pip install -e git+https://github.com/samson-wang/cython_bbox.git#egg=cython-bbox
-
 pip install asone
+pip install playsound
 
 # for CPU
 pip install torch torchvision
