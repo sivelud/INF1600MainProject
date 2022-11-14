@@ -38,28 +38,41 @@ def main(args):
             # It's a human
             print("human")
 
-            print(bbox_xyxy[0][0])
+            movement_detector.update()
+            # Nessecary in order for the program to exit correctly. Will probably be obsolete later in the project.
+            movement_detector.showMask()
+            # Region of interest. The part of the screen that will be checked for movement
 
+            for i, box in enumerate(bbox_xyxy):
+                x1, y1, x2, y2 = [int(i) for i in box]
+                
+                if x1 < 0:
+                    x1 = 0
+                if y1 < 0:
+                    y1 = 0
+                if x2 > 1920:
+                    x2 = 1920
+                if y2 > 1080:
+                    y2 = 1080
 
+                print(x1, x2, y1, y2)
 
-        movement_detector.update()
-        # Nessecary in order for the program to exit correctly. Will probably be obsolete later in the project.
-        movement_detector.showMask()
-        # Region of interest. The part of the screen that will be checked for movement
-        movement_detector.updateRoi(0, 200, 0, 1080)
+                
+                # movement_detector.updateRoi(0, 200, 0, 1080)
+                movement_detector.updateRoi(x1, x2, y1, y2)
 
-        
+                
 
-        if judge.update(movement_detector.PercentageOfMovement()):
-            print("GAME OVER!")
-            break
+                if judge.update(movement_detector.PercentageOfMovement()):
+                    print("GAME OVER!")
+                    break
 
-        key = cv2.waitKey(30)
-        if key == 27:
-            break
-        if key == 32:
-            print("YOU WON!")
-            judge.redLight()
+                key = cv2.waitKey(30)
+                if key == 27:
+                    break
+                if key == 32:
+                    print("YOU WON!")
+                    judge.redLight()
 
 
     # Always close camera on exit.
