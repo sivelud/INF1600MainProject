@@ -1,5 +1,6 @@
 .env/
 __pycache__/
 weights/
+yolox/
 *.onnx
 *.pth

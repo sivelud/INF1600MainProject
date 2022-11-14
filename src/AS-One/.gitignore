@@ -1,0 +1,11 @@
+.env/
+**__pycache__**
+*.onnx
+*.pt
+*.pth
+**byte_track_results**
+**deep_sort_results**
+**nor_fair_results**
+build/
+dist/
+asone.egg-info/

@@ -1,5 +1,6 @@
 from tracker import MovementDetector
 from tracker import Judge
+from asone import asone
 import cv2
 
 
