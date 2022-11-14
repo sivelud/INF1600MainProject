@@ -52,7 +52,7 @@ class ASOne:
             yield bbox_details, frame_details
 
     def track_webcam(self, 
-                     cam_id=0, 
+                     capture, 
                      output_dir='results', 
                      save_result=False, 
                      display=True, 
@@ -61,7 +61,7 @@ class ASOne:
 
         output_filename = 'results.mp4'
 
-        for (bbox_details, frame_details) in self._start_tracking(cam_id,
+        for (bbox_details, frame_details) in self._start_tracking(capture,
                                                                     output_filename,
                                                                     output_dir=output_dir,
                                                                     fps=29,
@@ -73,7 +73,7 @@ class ASOne:
             yield bbox_details, frame_details
 
     def _start_tracking(self, 
-                        stream_path, 
+                        capture, 
                         filename,  
                         fps=None, 
                         output_dir='results',
@@ -82,7 +82,7 @@ class ASOne:
                         draw_trails=False, 
                         filter_classes=None):
 
-        cap = cv2.VideoCapture(stream_path)
+        cap = capture
         width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
         frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)

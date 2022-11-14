@@ -1,8 +1,8 @@
 from tracker import MovementDetector
 from tracker import Judge
 import argparse
-import asone
-from asone import ASOne
+import AS_One.asone as asone
+from AS_One.asone import ASOne
 import cv2
 
 def main(args):
@@ -38,7 +38,7 @@ def main(args):
             # It's a human
             print("human")
 
-            print(bbox_xyxy)
+            print(bbox_xyxy[0][0])
 
 
 
