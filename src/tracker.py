@@ -58,8 +58,9 @@ class Judge():
         self.greenLightBool = True
         self.tempBool = False
         self.time = time.time()
-        self.starttime = self.time
-        self.timeLastLight = self.starttime
+        self.timeLastLight = self.time + 1.5
+
+        playsound('sounds/introSquid.mp3', False)
         
 
     def update(self, movement):
