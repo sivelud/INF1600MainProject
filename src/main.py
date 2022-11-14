@@ -23,20 +23,24 @@ def main(args):
     track_fn = dt_obj.track_webcam(cap, output_dir='data/results', save_result=False, display=True)
 
     # Movement Judge Parameters:
-    top_cutoff = 80 # Movement above this percentage will be ignored
-    sensitivity = 3 # Movement above this percentage will result in game over
+    top_cutoff = 0.8 # Movement above this percentage will be ignored
+    sensitivity = 0.02 # Movement above this percentage will result in game over
 
     movement_detector = MovementDetector(cap)
     judge = Judge(top_cutoff, sensitivity)
+
+    game_over = False
 
     # Loop over track_fn to retrieve outputs of each frame 
     for bbox_details, frame_details in track_fn:
         bbox_xyxy, ids, scores, class_ids = bbox_details
         frame, frame_num, fps = frame_details
 
+        if game_over:
+            break
+
         if 0 in class_ids:
             # It's a human
-            print("human")
 
             movement_detector.update()
             # Nessecary in order for the program to exit correctly. Will probably be obsolete later in the project.
@@ -45,6 +49,11 @@ def main(args):
 
             for i, box in enumerate(bbox_xyxy):
                 x1, y1, x2, y2 = [int(i) for i in box]
+
+                # x1 = int(x1 / 3)
+                # x2 = int(x2 / 3)
+                # y1 = int(y1 / 2.5)
+                # y2 = int(y2 / 2.5)
                 
                 if x1 < 0:
                     x1 = 0
@@ -56,12 +65,16 @@ def main(args):
                     y2 = 1080
 
                 
-                #movement_detector.updateRoi(0, 1920, 0, 1080)
+                movement_detector.updateRoi(0, 1920, 0, 1080)
                 #movement_detector.updateRoi(x1, x2, y1, y2)
 
-                movement_detector.PercentageOfMovement2(100, 120, 100, 120)            
+                # movement_detector.PercentageOfMovement2(100, 120, 100, 120)            
+                movement_ratio = movement_detector.PercentageOfMovement2(x1, x2, y1, y2)
+                #movement_ratio = movement_detector.PercentageOfMovement2(0, 479, 0, 639)
+                print("ratio: " + str(movement_ratio))         
 
-                if judge.update(movement_detector.PercentageOfMovement()):
+                if judge.update(movement_ratio):
+                    game_over = True
                     print("GAME OVER!")
                     break
 
@@ -81,7 +94,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--video_path', help='Path to input video')
-    parser.add_argument('--cpu', default=False, action='store_false', dest='use_cuda',
+    parser.add_argument('--cpu', default=True, action='store_false', dest='use_cuda',
                         help='run on cpu if not provided the program will run on gpu.')
     parser.add_argument('--no_save', default=True, action='store_false',
                         dest='save_result', help='whether or not save results')

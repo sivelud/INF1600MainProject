@@ -1,6 +1,7 @@
 import cv2
 from playsound import playsound
 import time
+import random
 
 
 class MovementDetector():
@@ -12,7 +13,7 @@ class MovementDetector():
         self.object_detector = cv2.createBackgroundSubtractorMOG2(history=40, varThreshold=80)
         ret, self.frame = self.cap.read()
         height, width, _ = self.frame.shape
-        self.roi = self.frame[0: 1080,0: 1920]
+        self.roi = self.frame[0: 1920,0: 1080]
         
         
 
@@ -45,31 +46,30 @@ class MovementDetector():
 
 
     def PercentageOfMovement2(self, x1, x2, y1, y2):
-        print("running percantageOfMovement2")
-
         w = 0 # White pixels
         t = 0 # Total number of pixels
         n = 0
-        xCount = 0
-        yCount = 0
+
+        # print(x1, x2)
+        # print(y1, y2)
+        # print(len(self.mask))
+        # print(len(self.mask[x1]))
+
+        dx = x2 - x1
+        dy = y2 - y1
 
         # Goes over all pixels in mask
-        for i in range(x1, x2):
-            xCount += 1
-            print(xCount)
-            for j in range(y1, y2):
-                yCount += 1
-                print(yCount)
-                if self.mask[i][j]:
+        for x in range(dx - 1):
+            for y in range(dy - 1):
+                if self.mask[y1 + y][x1 + x]:
                     w+=1
                     t+=1
                 else:
                     t+=1
             
-
         # Percentage of pixels that are white
         if w and t:
-            n = int(w/t*100)
+            n = ((w/t))
         return(n)
 
 
@@ -89,6 +89,8 @@ class Judge():
         self.tempBool = False
         self.time = time.time()
         self.timeLastLight = self.time + 1.5
+        self.redLightTime = random.randint(1,5)
+        self.greenLightTime = random.randint(2,7)
 
         playsound('sounds/introSquid.mp3', False)
         
@@ -97,7 +99,7 @@ class Judge():
         self.time = time.time()
 
         if not self.greenLightBool:
-            if self.time - self.timeLastLight > 1:
+            if self.time - self.timeLastLight > 1.8:
                 if movement > self.top_cutoff:
                     return False
                 if movement > self.sensitivity:
@@ -127,13 +129,15 @@ class Judge():
     def autoChangeLight(self):
 
         if self.greenLightBool:
-            if self.time - self.timeLastLight > 2:
+            if self.time - self.timeLastLight > self.redLightTime:
+                self.redLightTime = random.randint(1,5)
                 self.changeLight()
                 self.timeLastLight = self.time
                 return
 
         if not self.greenLightBool:
-            if self.time - self.timeLastLight > 5:
+            if self.time - self.timeLastLight > self.greenLightTime:
+                self.greenLightTime = random.randint(3,7)
                 self.changeLight()
                 self.timeLastLight = self.time
                 return
