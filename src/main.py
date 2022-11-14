@@ -49,11 +49,6 @@ def main(args):
 
             for i, box in enumerate(bbox_xyxy):
                 x1, y1, x2, y2 = [int(i) for i in box]
-
-                # x1 = int(x1 / 3)
-                # x2 = int(x2 / 3)
-                # y1 = int(y1 / 2.5)
-                # y2 = int(y2 / 2.5)
                 
                 if x1 < 0:
                     x1 = 0
@@ -66,12 +61,8 @@ def main(args):
 
                 
                 movement_detector.updateRoi(0, 1920, 0, 1080)
-                #movement_detector.updateRoi(x1, x2, y1, y2)
 
-                # movement_detector.PercentageOfMovement2(100, 120, 100, 120)            
-                movement_ratio = movement_detector.PercentageOfMovement2(x1, x2, y1, y2)
-                #movement_ratio = movement_detector.PercentageOfMovement2(0, 479, 0, 639)
-                print("ratio: " + str(movement_ratio))         
+                movement_ratio = movement_detector.PercentageOfMovement2(x1, x2, y1, y2)   
 
                 if judge.update(movement_ratio):
                     game_over = True
@@ -83,6 +74,7 @@ def main(args):
                     break
                 if key == 32:
                     print("YOU WON!")
+                    game_over = True
                     judge.redLight()
 
 

@@ -50,11 +50,6 @@ class MovementDetector():
         t = 0 # Total number of pixels
         n = 0
 
-        # print(x1, x2)
-        # print(y1, y2)
-        # print(len(self.mask))
-        # print(len(self.mask[x1]))
-
         dx = x2 - x1
         dy = y2 - y1
 

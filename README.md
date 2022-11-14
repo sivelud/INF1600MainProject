@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Make sure to install `GPU` drivers in your system if you want to use `GPU` . Follow [driver installation](./Driver-Installations.md) for further instructions.
+- Make sure to install `GPU` drivers in your system if you want to use `GPU` . Follow [driver installation](./Driver-Installation.md) for further instructions.
 - Make sure you have [MS Build tools](https://aka.ms/vs/17/release/vs_BuildTools.exe) installed in system if using windows. 
 - [Download git for windows](https://git-scm.com/download/win) if not installed.
 
