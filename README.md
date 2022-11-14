@@ -1,6 +1,4 @@
-# INF1600MainProject
-
-## Getting Started
+# INF-1600 Main Project (Red Light, Green Light)
 
 ## Prerequisites
 
