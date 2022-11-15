@@ -86,7 +86,7 @@ class Judge():
         self.tempBool = False
         self.time = time.time()
         self.timeLastLight = self.time + 1.5
-        self.redLightTime = random.randint(1,5)
+        self.redLightTime = 3
         self.greenLightTime = random.randint(2,7)
 
         playsound('sounds/introSquid.mp3', False)

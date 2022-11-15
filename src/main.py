@@ -4,8 +4,17 @@ import argparse
 import AS_One.asone as asone
 from AS_One.asone import ASOne
 import cv2
+from playsound import playsound
+import os
+import glob
+import numpy as np
 
 def main(args):
+    # Remove elimenated players from previous game
+    files = glob.glob('images/*')
+    for f in files:
+        os.remove(f)
+
     filter_classes = args.filter_classes
 
     if filter_classes:
@@ -30,6 +39,9 @@ def main(args):
     judge = Judge(top_cutoff, sensitivity)
 
     game_over = False
+
+    eliminated_players = []
+    imgs = []
 
     # Loop over track_fn to retrieve outputs of each frame 
     for bbox_details, frame_details in track_fn:
@@ -64,9 +76,25 @@ def main(args):
                 movement_ratio = movement_detector.PercentageOfMovement2(x1, x2, y1, y2)   
 
                 if judge.update(movement_ratio):
-                    game_over = True
+                    #game_over = True
                     print("GAME OVER!")
-                    break
+
+                    # Takes screenshot of elimanated player
+                    if ids[i] not in eliminated_players and class_ids[i] == 0:
+                        playsound('sounds/gunShot.mp3', False)
+                        ret, img = cap.read()
+                        crop_img = img[y1:y1+(y2-y1), x1:x1+(x2-x1)]
+                        print("Player " + str(ids[i]) + "is eliminated!")
+                        img_file = 'images/player_' + str(ids[i]) + '.png'
+                        cv2.imwrite(img_file, crop_img)
+                        eliminated_players.append(ids[i])
+
+                        img_128 = cv2.resize(crop_img, (150, 200), interpolation = cv2.INTER_AREA)
+                        imgs.append(img_128)
+                        img_row = np.concatenate(imgs, axis=1)
+                        cv2.namedWindow("Eliminated Players")
+                        cv2.moveWindow("Eliminated Players", 800, 1000)
+                        cv2.imshow('Eliminated Players', img_row)
 
                 key = cv2.waitKey(30)
                 if key == 27:
