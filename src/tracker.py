@@ -23,6 +23,8 @@ class MovementDetector():
         self.mask = self.object_detector.apply(self.roi)
 
     def showMask(self):
+        cv2.namedWindow("Mask")
+        cv2.moveWindow("Mask", 1000, 150)
         cv2.imshow("Mask", self.mask)
         
 
@@ -94,7 +96,7 @@ class Judge():
         self.time = time.time()
 
         if not self.greenLightBool:
-            if self.time - self.timeLastLight > 1.8:
+            if self.time - self.timeLastLight > 2.0:
                 if movement > self.top_cutoff:
                     return False
                 if movement > self.sensitivity:

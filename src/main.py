@@ -54,11 +54,10 @@ def main(args):
                     x1 = 0
                 if y1 < 0:
                     y1 = 0
-                if x2 > 1920:
-                    x2 = 1920
-                if y2 > 1080:
-                    y2 = 1080
-
+                if x2 > 640:
+                    x2 = 640
+                if y2 > 480:
+                    y2 = 480
                 
                 movement_detector.updateRoi(0, 1920, 0, 1080)
 

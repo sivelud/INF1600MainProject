@@ -119,9 +119,9 @@ class ASOne:
                 frame, filter_classes=filter_classes)
             elapsed_time = time.time() - start_time
 
-            logger.info(
-                'frame {}/{} ({:.2f} ms)'.format(frame_id, int(frame_count),
-                                                 elapsed_time * 1000), )
+            # logger.info(
+            #     'frame {}/{} ({:.2f} ms)'.format(frame_id, int(frame_count),
+            #                                      elapsed_time * 1000), )
 
             im0 = utils.draw_boxes(im0, bboxes_xyxy, identities=ids, draw_trails=draw_trails)
 
