@@ -13,41 +13,21 @@ class MovementDetector():
         self.object_detector = cv2.createBackgroundSubtractorMOG2(history=40, varThreshold=80)
         ret, self.frame = self.cap.read()
         height, width, _ = self.frame.shape
-        self.roi = self.frame[0: 1920,0: 1080]
-        
         
 
     def update(self):
         ret, self.frame = self.cap.read()
         height, width, _ = self.frame.shape
+        self.roi = self.frame[0: 1080,0: 1920]
         self.mask = self.object_detector.apply(self.roi)
 
     def showMask(self):
         cv2.namedWindow("Mask")
         cv2.moveWindow("Mask", 1000, 150)
         cv2.imshow("Mask", self.mask)
-        
-
-    def PercentageOfMovement(self):
-        w = 0 # White pixels
-        t = 0 # Total number of pixels
-        n = 0
-
-        # Goes over all pixels in mask
-        for i in self.mask:
-            for j in i:
-                if j:
-                    w+=1
-                    t+=1
-                else:
-                    t+=1
-        # Percentage of pixels that are white
-        if w and t:
-            n = int(w/t*100)
-        return(n)
 
 
-    def PercentageOfMovement2(self, x1, x2, y1, y2):
+    def PercentageOfMovement(self, x1, x2, y1, y2):
         w = 0 # White pixels
         t = 0 # Total number of pixels
         n = 0

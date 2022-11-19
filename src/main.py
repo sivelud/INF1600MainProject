@@ -15,27 +15,29 @@ def main(args):
     for f in files:
         os.remove(f)
 
-    filter_classes = args.filter_classes
-
-    if filter_classes:
-        filter_classes = [filter_classes]
-
+    # Instantiate Asone objects
     dt_obj = ASOne(
         tracker=asone.BYTETRACK,
         detector=asone.YOLOX_DARKNET_PYTORCH,
         use_cuda=args.use_cuda
-        )
+    )
+
+    filter_classes = ['person'] # Set to track humans
 
     # Track using webcam
     cap = cv2.VideoCapture(0)
 
-    track_fn = dt_obj.track_webcam(cap, output_dir='data/results', save_result=False, display=True)
+    # Get tracking function
+    track_fn = dt_obj.track_webcam(cap, output_dir='data/results', save_result=False, display=True, filter_classes=filter_classes)
 
     # Movement Judge Parameters:
     top_cutoff = 0.8 # Movement above this percentage will be ignored
-    sensitivity = 0.02 # Movement above this percentage will result in game over
+    sensitivity = 0.022 # Movement above this percentage will result in game over
 
+    # Initiate the MOG2 movement detector with the same camera
     movement_detector = MovementDetector(cap)
+
+    # Initialize judge object for determining movement
     judge = Judge(top_cutoff, sensitivity)
 
     game_over = False
@@ -55,13 +57,12 @@ def main(args):
             # It's a human
 
             movement_detector.update()
-            # Nessecary in order for the program to exit correctly. Will probably be obsolete later in the project.
             movement_detector.showMask()
-            # Region of interest. The part of the screen that will be checked for movement
 
             for i, box in enumerate(bbox_xyxy):
                 x1, y1, x2, y2 = [int(i) for i in box]
                 
+                # Constrain the box corners to be inside the camera viewpoint
                 if x1 < 0:
                     x1 = 0
                 if y1 < 0:
@@ -70,11 +71,11 @@ def main(args):
                     x2 = 640
                 if y2 > 480:
                     y2 = 480
-                
-                movement_detector.updateRoi(0, 1920, 0, 1080)
+            
+                # Get the amount of moving pixels inside the rectangle divided by the rectangle's area
+                movement_ratio = movement_detector.PercentageOfMovement(x1, x2, y1, y2)   
 
-                movement_ratio = movement_detector.PercentageOfMovement2(x1, x2, y1, y2)   
-
+                # Check if the movement ratio is above the treshold given by the sensitivity.
                 if judge.update(movement_ratio):
                     #game_over = True
                     print("GAME OVER!")
@@ -89,7 +90,7 @@ def main(args):
                         cv2.imwrite(img_file, crop_img)
                         eliminated_players.append(ids[i])
 
-                        img_128 = cv2.resize(crop_img, (150, 200), interpolation = cv2.INTER_AREA)
+                        img_128 = cv2.resize(crop_img, (150, 200), interpolation = cv2.INTER_LINEAR)
                         imgs.append(img_128)
                         img_row = np.concatenate(imgs, axis=1)
                         cv2.namedWindow("Eliminated Players")
